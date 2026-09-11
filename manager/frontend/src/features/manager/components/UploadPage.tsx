@@ -37,7 +37,7 @@ export default function UploadPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center">
+    <div className="min-h-screen flex items-center justify-center -mt-20">
       <div className="max-w-xl w-full px-4">
         <h2 className="text-lg font-semibold text-white text-center">Upload CSV</h2>
 

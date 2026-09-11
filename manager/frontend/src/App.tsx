@@ -1,9 +1,17 @@
 import './index.css'
-import useBrowserRouter from './hooks/useBrowserRouter'
-import { RouterProvider } from 'react-router/dom'
+import { lazy } from 'react'
+import { createBrowserRouter, RouterProvider } from 'react-router'
+
+const Manager = lazy(() => import('./features/manager'))
+
+const router = createBrowserRouter([
+  {
+    path: '/',
+    Component: Manager,
+  },
+])
 
 function App() {
-  const router = useBrowserRouter()
   return <RouterProvider router={router} />
 }
 
