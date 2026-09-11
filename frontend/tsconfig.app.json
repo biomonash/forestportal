@@ -23,5 +23,10 @@
     "noFallthroughCasesInSwitch": true,
     "noUncheckedSideEffectImports": true
   },
-  "include": ["src", "../manager/frontend/src/manager", "../manager/frontend/src/pages/Manager.tsx", "../manager/frontend/src/apis/manager.api.ts"]
+  "include": [
+    "src",
+    "../manager/frontend/src/manager",
+    "../manager/frontend/src/pages/Manager.tsx",
+    "../manager/frontend/src/apis/manager.api.ts"
+  ]
 }
