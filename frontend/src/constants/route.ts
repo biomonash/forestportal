@@ -7,5 +7,4 @@ export default {
   GRAPH: '/graph',
   SETTINGS: '/settings',
   UNAUTHORIZED: '/401',
-  MANAGER: '/manager',
 }
