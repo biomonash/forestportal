@@ -50,6 +50,7 @@ type Querier interface {
 	UpdateSiteByCode(ctx context.Context, arg UpdateSiteByCodeParams) (Site, error)
 	UpdateSpecies(ctx context.Context, arg UpdateSpeciesParams) (Species, error)
 	UpdateSpeciesIUCNStatus(ctx context.Context, arg UpdateSpeciesIUCNStatusParams) error
+	UpdateSpeciesManager(ctx context.Context, arg UpdateSpeciesManagerParams) (Species, error)
 }
 
 var _ Querier = (*Queries)(nil)
