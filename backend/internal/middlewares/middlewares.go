@@ -1,4 +1,4 @@
-package server
+package middlewares
 
 import (
 	"fmt"
@@ -8,7 +8,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func errorHandler() gin.HandlerFunc {
+func ErrorHandler() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		c.Next()
 
@@ -30,7 +30,7 @@ func errorHandler() gin.HandlerFunc {
 }
 
 // Reference: https://leapcell.medium.com/robust-error-handling-in-go-web-projects-with-gin-58eba3b06e6e
-func panicRecovery() gin.HandlerFunc {
+func PanicRecovery() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		defer func() {
 			if err := recover(); err != nil {

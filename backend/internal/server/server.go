@@ -8,6 +8,7 @@ import (
 	"github.com/biomonash/forestportal/internal/site"
 	"github.com/biomonash/forestportal/internal/species"
 	"github.com/biomonash/forestportal/internal/stats"
+	"github.com/biomonash/forestportal/internal/middlewares"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	swaggerFiles "github.com/swaggo/files"
@@ -41,8 +42,8 @@ func New(querier db.Querier) *Server {
 	r := gin.New()
 
 	r.Use(gin.Logger())
-	r.Use(panicRecovery())
-	r.Use(errorHandler())
+	r.Use(middlewares.PanicRecovery())
+	r.Use(middlewares.ErrorHandler())
 	r.Use(cors.Default()) // TODO: development only
 
 	r.NoRoute(assets.Serve)

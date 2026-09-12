@@ -8,4 +8,5 @@ func Register(r gin.IRouter, ctl *Controller) {
 	g.GET("/by-common-name/:name", ctl.GetSpeciesByCommonName)
 	g.GET("/:id", ctl.GetSpeciesByID)
 	g.GET("/observed", ctl.GetObservedSpecies)
+	g.PUT("/:id", ctl.UpdateSpeciesManager)
 }
