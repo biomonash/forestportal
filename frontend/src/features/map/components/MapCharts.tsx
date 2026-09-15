@@ -25,11 +25,14 @@ import {
   selectTenure,
   updateSelectedTenure,
   updateSelectedSpecies,
+  selectFromYear,
+  selectToYear,
 } from '../../../store/mapSlice'
 import { useAppDispatch, useAppSelector } from '../../../hooks/redux'
 import Badge from '../../../components/ui/Badge'
 import { API_BASE_URL } from '../../../constants/api'
-
+import YearRangeFilter from './YearRangeFilter'
+import { yearEnd, yearStart } from '../../../helpers/yearRange'
 function capitalize(text: string) {
   return text.charAt(0).toUpperCase() + text.slice(1).toLowerCase()
 }
@@ -88,6 +91,8 @@ const MapCharts: React.FC = () => {
   const selectedTaxa = useSelector(selectTaxa)
   const selectedSpecies = useSelector(selectSpecies)
   const selectedTenure = useSelector(selectTenure)
+  const selectedFromYear = useSelector(selectFromYear)
+  const selectedToYear = useSelector(selectToYear)
 
   const stats = useSelector((state: RootState) => ({
     total: state.map.totalObservations,
@@ -133,10 +138,24 @@ const MapCharts: React.FC = () => {
     }
     if (selectedTaxa) params.append('taxa', selectedTaxa)
     if (selectedSpecies) params.append('commonName', selectedSpecies)
+    if (selectedFromYear !== undefined) {
+      params.append('from', yearStart(selectedFromYear))
+    }
+
+    if (selectedToYear !== undefined) {
+      params.append('to', yearEnd(selectedToYear))
+    }
 
     const url = `${API_BASE_URL}/api/export?${params.toString()}`
     window.location.href = url
-  }, [selectedBlock, selectedSite, selectedTaxa, selectedSpecies])
+  }, [
+    selectedBlock,
+    selectedSite,
+    selectedTaxa,
+    selectedSpecies,
+    selectedFromYear,
+    selectedToYear,
+  ])
 
   useEffect(() => {
     return () => {
@@ -158,7 +177,7 @@ const MapCharts: React.FC = () => {
       {showToast && (
         <div className="fixed top-5 left-1/2 -translate-x-1/2 z-[9999] pointer-events-none flex items-center gap-2 bg-white text-gray-800 text-xs font-medium px-4 py-2.5 rounded-xl shadow-xl border border-gray-100">
           <span className="text-green-500 text-sm">
-            ✓ Link copied to clipboard
+            Link copied to clipboard
           </span>
         </div>
       )}
@@ -353,6 +372,7 @@ const MapCharts: React.FC = () => {
             className="w-full"
           />
         </div>
+        <YearRangeFilter />
       </div>
 
       {/* Species badge */}
@@ -364,7 +384,7 @@ const MapCharts: React.FC = () => {
               nativeCount > 0 ? 'bg-green-500' : 'bg-red-500'
             }`}
           >
-            {nativeCount > 0 ? '🌿 Native' : '⚠️ Non-Native'}
+            {nativeCount > 0 ? ' Native' : ' Non-Native'}
           </span>
         </div>
       )}
