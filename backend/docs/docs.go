@@ -701,6 +701,148 @@ const docTemplate = `{
                     }
                 }
             }
+        },
+        "/stats/observations/timeseries/monthly": {
+            "get": {
+                "description": "Observation counts grouped by month for a given date range (e.g. one year)",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "statistics"
+                ],
+                "summary": "Observation monthly time series",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "format": "date-time",
+                        "description": "Search start from",
+                        "name": "from",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "format": "date-time",
+                        "description": "Search end to",
+                        "name": "to",
+                        "in": "query"
+                    },
+                    {
+                        "type": "array",
+                        "items": {
+                            "type": "integer"
+                        },
+                        "collectionFormat": "multi",
+                        "description": "Filter by site block",
+                        "name": "block[]",
+                        "in": "query"
+                    },
+                    {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "collectionFormat": "multi",
+                        "description": "Filter by site code",
+                        "name": "siteCode[]",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Filter by taxa",
+                        "name": "taxa",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Filter by species common name",
+                        "name": "commonName",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/stats.ObservationMonthlyTimeSeriesResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/stats/observations/timeseries/monthly/all-years": {
+            "get": {
+                "description": "Observation counts grouped by calendar month (Jan-Dec), aggregated across every year in range",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "statistics"
+                ],
+                "summary": "Observation monthly time series across all years",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "format": "date-time",
+                        "description": "Search start from",
+                        "name": "from",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "format": "date-time",
+                        "description": "Search end to",
+                        "name": "to",
+                        "in": "query"
+                    },
+                    {
+                        "type": "array",
+                        "items": {
+                            "type": "integer"
+                        },
+                        "collectionFormat": "multi",
+                        "description": "Filter by site block",
+                        "name": "block[]",
+                        "in": "query"
+                    },
+                    {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "collectionFormat": "multi",
+                        "description": "Filter by site code",
+                        "name": "siteCode[]",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Filter by taxa",
+                        "name": "taxa",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Filter by species common name",
+                        "name": "commonName",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/stats.ObservationMonthlyTimeSeriesAllYearsResponse"
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {
@@ -809,6 +951,9 @@ const docTemplate = `{
                 },
                 "indicator": {
                     "type": "boolean"
+                },
+                "iucnStatus": {
+                    "type": "string"
                 },
                 "native": {
                     "type": "boolean"
@@ -926,6 +1071,9 @@ const docTemplate = `{
                 "indicator": {
                     "type": "boolean"
                 },
+                "iucnStatus": {
+                    "type": "string"
+                },
                 "native": {
                     "type": "boolean"
                 },
@@ -988,6 +1136,20 @@ const docTemplate = `{
                 }
             }
         },
+        "stats.MonthlyPoint": {
+            "type": "object",
+            "properties": {
+                "month": {
+                    "type": "integer"
+                },
+                "observationCount": {
+                    "type": "integer"
+                },
+                "speciesCount": {
+                    "type": "integer"
+                }
+            }
+        },
         "stats.ObservationByBlocksResponse": {
             "type": "object",
             "properties": {
@@ -1006,6 +1168,34 @@ const docTemplate = `{
                     "type": "array",
                     "items": {
                         "$ref": "#/definitions/stats.SiteResponse"
+                    }
+                }
+            }
+        },
+        "stats.ObservationMonthlyTimeSeriesAllYearsResponse": {
+            "type": "object",
+            "properties": {
+                "series": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/definitions/stats.MonthlyPoint"
+                        }
+                    }
+                }
+            }
+        },
+        "stats.ObservationMonthlyTimeSeriesResponse": {
+            "type": "object",
+            "properties": {
+                "series": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/definitions/stats.TimeSeriesPoint"
+                        }
                     }
                 }
             }

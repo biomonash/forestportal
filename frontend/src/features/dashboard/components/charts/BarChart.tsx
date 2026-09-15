@@ -17,9 +17,11 @@ const chartTheme = {
 export const BarChart = ({
   startYear,
   endYear,
+  onYearClick,
 }: {
   startYear?: string
   endYear?: string
+  onYearClick?: (year: string) => void
 }) => {
   const [data, setData] = useState<YearEntry[]>([])
 
@@ -75,6 +77,7 @@ export const BarChart = ({
           enableLabel={true}
           labelSkipHeight={12}
           labelTextColor="#000000"
+          onClick={(datum) => onYearClick?.(String(datum.indexValue))}
           axisBottom={{
             legend: 'Year',
             legendPosition: 'middle',
