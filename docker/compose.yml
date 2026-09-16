@@ -15,3 +15,28 @@ services:
     image: adminer:5.3.0
     ports:
       - 8080:8080
+  garage:
+    image: dxflrs/garage:v2.3.0
+    command: /garage server --single-node --default-bucket
+    environment:
+      GARAGE_RPC_SECRET: ${GARAGE_RPC_SECRET}
+      GARAGE_ADMIN_TOKEN: ${GARAGE_ADMIN_TOKEN}
+      GARAGE_DEFAULT_ACCESS_KEY: ${GARAGE_DEFAULT_ACCESS_KEY}
+      GARAGE_DEFAULT_SECRET_KEY: ${GARAGE_DEFAULT_SECRET_KEY}
+      GARAGE_DEFAULT_BUCKET: ${GARAGE_DEFAULT_BUCKET}
+    volumes:
+      - ./garage/garage.toml:/etc/garage.toml:ro
+      - ../garage_data:/var/lib/garage
+    ports:
+      - 3900:3900
+      - 3901:3901
+      - 3902:3902
+      - 3903:3903
+  garage-webui:
+    image: khairul169/garage-webui:latest
+    environment:
+      API_BASE_URL: "http://garage:3903"
+      API_ADMIN_KEY: ${GARAGE_ADMIN_TOKEN}
+      S3_ENDPOINT_URL: "http://garage:3900"
+    ports:
+      - "127.0.0.1:3909:3909"
