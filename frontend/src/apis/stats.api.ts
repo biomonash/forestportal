@@ -53,6 +53,18 @@ export type DashboardStatsResponse = ObservationStats & {
   sitesCount: number
 }
 
+export type ObservationMonthlyTimeseriesResponse = {
+  series: Record<string, TimeseriesPoint[]>
+}
+
+export type ObservationMonthlyTimeseriesAllYearsResponse = {
+  series: Record<string, MonthlyPoint[]>
+}
+
+export type MonthlyPoint = ObservationStats & {
+  month: number
+}
+
 export async function getObservationsOverview(
   req: Partial<ObservationStatsRequest>,
 ): Promise<ObservationOverviewResponse> {
@@ -112,3 +124,29 @@ export async function getDashboardStats(
   )
   return response.data
 }
+
+
+export async function getObservationsMonthlyTimeseries(
+  req: Partial<ObservationStatsRequest>,
+): Promise<ObservationMonthlyTimeseriesResponse> {
+  const response = await fetcher.get<ObservationMonthlyTimeseriesResponse>(
+    '/stats/observations/timeseries/monthly',
+    {
+      params: req,
+    },
+  )
+  return response.data
+}
+
+export async function getObservationsMonthlyTimeseriesAllYears(
+  req: Partial<ObservationStatsRequest>,
+): Promise<ObservationMonthlyTimeseriesAllYearsResponse> {
+  const response = await fetcher.get<ObservationMonthlyTimeseriesAllYearsResponse>(
+    '/stats/observations/timeseries/monthly/all-years',
+    {
+      params: req,
+    },
+  )
+  return response.data
+}
+

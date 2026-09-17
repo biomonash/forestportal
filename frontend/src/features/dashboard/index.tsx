@@ -19,10 +19,13 @@ import { LineChart } from './components/charts/LineChart'
 import { PieChart } from './components/charts/PieChart'
 import { useSearchParams } from 'react-router'
 import dataConst from '../../constants/data'
+import { MonthlyBarChart } from './components/charts/MonthlyBarChart'
+
 
 const Dashboard: React.FC = () => {
   const [stats, setStats] = useState<DashboardStatsResponse | null>(null)
   const [searchParams, setSearchParams] = useSearchParams()
+  const [drilldownYear, setDrilldownYear] = useState<string | null>(null)
 
   const startYear = searchParams.get('startYear') || ''
   const endYear = searchParams.get('endYear') || ''
@@ -168,12 +171,20 @@ const Dashboard: React.FC = () => {
       {/* Data Visualizations */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full">
         <Card className={isFilterActive ? 'md:col-span-2' : ''}>
-          <CardHeader>
-            <CardTitle>Species by Year</CardTitle>
-            <CardDescription>Distribution across years</CardDescription>
+        <CardHeader>
+          <CardTitle>Species by Year</CardTitle>
+          <CardDescription>Distribution across years</CardDescription>
+          <Button variant="outline" onClick={() => setDrilldownYear('all')}>
+            See all Years
+            </Button>
           </CardHeader>
           <CardContent>
-            <BarChart startYear={startYear} endYear={endYear} />
+            <BarChart
+              startYear={startYear}
+              endYear={endYear}
+              onYearClick={setDrilldownYear}
+            />
+            {drilldownYear && <MonthlyBarChart year={drilldownYear} />}
           </CardContent>
         </Card>
 
