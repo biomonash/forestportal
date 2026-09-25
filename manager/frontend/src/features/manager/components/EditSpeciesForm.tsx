@@ -7,6 +7,20 @@ interface Props {
     onSaved: (updated: Species) => void
 }
 
+const IUCN_OPTIONS = [
+    { label: 'None', value: ''},
+    { label: 'LC - Least Concern', value: 'LC'},
+    { label: 'NT - Near Threatened', value: 'NT'},
+    { label: 'VU - Vulnerable', value: 'VU'},
+    { label: 'EN - Endangered', value: 'EN'},
+    { label: 'CR - Critically Endangered', value: 'CR'},
+    { label: 'EW - Extinct in the Wild', value: 'EW'},
+    { label: 'EX - Extinct', value: 'EX'},
+    { label: 'DD - Data Deficient', value: 'DD'},
+    { label: 'NE - Not Evaluated', value: 'NE'},
+    { label: 'NA - Not Applicable', value: 'NA'},
+]
+
 export default function EditSpeciesForm({ species, onClose, onSaved }: Props) {
     return (
         <EditForm
@@ -17,13 +31,13 @@ export default function EditSpeciesForm({ species, onClose, onSaved }: Props) {
                 { label: 'Taxa', key: 'taxa', type: 'select', options: [{ label: 'Bird', value: 'bird' }, { label: 'Mammal', value: 'mammal' }, { label: 'Reptile', value: 'reptile' }] },
                 { label: 'Indicator', key: 'indicator', type: 'select', options: [{ label: 'Yes', value: 'true' }, { label: 'No', value: 'false' }] },
                 { label: 'Reportable', key: 'reportable', type: 'select', options: [{ label: 'Yes', value: 'true' }, { label: 'No', value: 'false' }] },
-                { label: 'IUCN Status', key: 'iucnStatus', type: 'text' },
+                { label: 'IUCN Status', key: 'iucnStatus', type: 'select', options: IUCN_OPTIONS },
             ]}
             initialValues={{
-                native: species.native,
+                native: String(species.native),
                 taxa: species.taxa,
-                indicator: species.indicator,
-                reportable: species.reportable,
+                indicator: String(species.indicator),
+                reportable: String(species.reportable),
                 iucnStatus: species.iucnStatus,
             }}
             onClose={onClose}
