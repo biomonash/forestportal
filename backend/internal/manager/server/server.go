@@ -3,15 +3,15 @@ package server
 import (
 	"github.com/biomonash/forestportal/internal/db"
 	"github.com/biomonash/forestportal/internal/manager/upload"
-	"github.com/biomonash/forestportal/internal/species"
 	"github.com/biomonash/forestportal/internal/middlewares"
+	"github.com/biomonash/forestportal/internal/species"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 )
 
 type Server struct {
 	router *gin.Engine
-	q db.Querier
+	q      db.Querier
 }
 
 func New(q db.Querier) *Server {
@@ -24,11 +24,14 @@ func New(q db.Querier) *Server {
 
 	api := r.Group("/api/manager")
 	upload.Register(api, upload.NewController(q))
-	species.Register(api, species.NewController(q))
+
+	speciesCtl := species.NewController(q)
+	species.Register(api, speciesCtl)
+	api.PUT("/species/:id", speciesCtl.UpdateSpeciesManager)
 
 	return &Server{
 		router: r,
-		q: q,
+		q:      q,
 	}
 }
 
