@@ -4,6 +4,7 @@ import (
 	"github.com/biomonash/forestportal/internal/db"
 	"github.com/biomonash/forestportal/internal/manager/upload"
 	"github.com/biomonash/forestportal/internal/middlewares"
+	"github.com/biomonash/forestportal/internal/site"
 	"github.com/biomonash/forestportal/internal/species"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
@@ -28,6 +29,10 @@ func New(q db.Querier) *Server {
 	speciesCtl := species.NewController(q)
 	species.Register(api, speciesCtl)
 	api.PUT("/species/:id", speciesCtl.UpdateSpeciesManager)
+
+	siteCtl := site.NewController(q)
+	site.Register(api, siteCtl)
+	api.PUT("/sites/:code", siteCtl.UpdateSiteByCode)
 
 	return &Server{
 		router: r,
