@@ -91,6 +91,22 @@ func ImportCSV(ctx context.Context, q *db.Queries, filename string) error {
 		if err != nil {
 			return fmt.Errorf("Row %d: failed to parse observation: %w", i, err)
 		}
+
+		// Skip if observation already exists
+		_, err = q.GetObservationByKey(ctx, db.GetObservationByKeyParams{
+			SiteID:    site.ID,
+			SpeciesID: species.ID,
+			Timestamp: params.Timestamp,
+		})
+
+		if err == nil {
+			i++
+			continue
+		}
+		if !errors.Is(err, pgx.ErrNoRows) {
+			return fmt.Errorf("Row %d: failed to check existing observation: %w", i, err)
+		}
+
 		batch = append(batch, params)
 
 		if len(batch) == BATCH_SIZE {

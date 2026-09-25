@@ -25,6 +25,7 @@ type Querier interface {
 	DeleteSpecies(ctx context.Context, id int64) error
 	ExportObservations(ctx context.Context, arg ExportObservationsParams) ([]ExportObservationsRow, error)
 	GetObservation(ctx context.Context, id int64) (Observation, error)
+	GetObservationByKey(ctx context.Context, arg GetObservationByKeyParams) (int64, error)
 	GetSite(ctx context.Context, id int64) (Site, error)
 	GetSiteByCode(ctx context.Context, code string) (Site, error)
 	GetSiteIDByCode(ctx context.Context, code string) (int64, error)
