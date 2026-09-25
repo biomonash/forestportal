@@ -26,6 +26,24 @@ export type Species = {
     images: string[]
 }
 
+export type Site = {
+    id: number
+    code: string
+    block: number
+    name: string | null
+    location: string | null
+    tenure: string
+    forest: string
+}
+
+export type UpdateSiteBody = {
+    block: number
+    name: string | null
+    location: string | null
+    tenure: string
+    forest: string
+}
+
 export type UpdateSpeciesBody = {
     native: boolean
     taxa: string
@@ -44,10 +62,28 @@ export async function listSpecies(): Promise<Species[]> {
 export async function updateSpecies(id: number, body: UpdateSpeciesBody): Promise<Species> {
     const res = await fetch(`${MANAGER_API_URL}/api/manager/species/${id}`, {
         method: 'PUT',
-        headers: {'Content-Type': 'application/json'},
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(body),
     })
     const data = await res.json()
     if (!res.ok) throw new Error(data.detail || 'Failed to update species')
+    return data
+}
+
+export async function listSites(): Promise<Site[]> {
+    const res = await fetch(`${MANAGER_API_URL}/api/manager/sites`)
+    const data = await res.json()
+    if (!res.ok) throw new Error(data.detail || 'Failed to fetch sites')
+    return data
+}
+
+export async function updateSite(code: string, body: UpdateSiteBody): Promise<Site> {
+    const res = await fetch(`${MANAGER_API_URL}/api/manager/sites/${code}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body),
+    })
+    const data = await res.json()
+    if (!res.ok) throw new Error(data.detail || 'Failed to update site')
     return data
 }
