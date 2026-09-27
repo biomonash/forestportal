@@ -41,6 +41,8 @@ type Querier interface {
 	ListSpeciesCountByTaxa(ctx context.Context, arg ListSpeciesCountByTaxaParams) ([]ListSpeciesCountByTaxaRow, error)
 	ObservationGroupByBlocks(ctx context.Context, arg ObservationGroupByBlocksParams) ([]ObservationGroupByBlocksRow, error)
 	ObservationGroupBySites(ctx context.Context, arg ObservationGroupBySitesParams) ([]ObservationGroupBySitesRow, error)
+	ObservationMonthFilteredTimeSeriesGroupByNative(ctx context.Context, arg ObservationMonthFilteredTimeSeriesGroupByNativeParams) ([]ObservationMonthFilteredTimeSeriesGroupByNativeRow, error)
+	ObservationMonthForAllYearFilteredTimeSeriesGroupByNative(ctx context.Context, arg ObservationMonthForAllYearFilteredTimeSeriesGroupByNativeParams) ([]ObservationMonthForAllYearFilteredTimeSeriesGroupByNativeRow, error)
 	ObservationTimeSeriesGroupByNative(ctx context.Context, arg ObservationTimeSeriesGroupByNativeParams) ([]ObservationTimeSeriesGroupByNativeRow, error)
 	SearchObservations(ctx context.Context, scientificName string) ([]SearchObservationsRow, error)
 	SearchSites(ctx context.Context, code string) ([]Site, error)

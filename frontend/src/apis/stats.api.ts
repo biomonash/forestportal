@@ -125,7 +125,6 @@ export async function getDashboardStats(
   return response.data
 }
 
-
 export async function getObservationsMonthlyTimeseries(
   req: Partial<ObservationStatsRequest>,
 ): Promise<ObservationMonthlyTimeseriesResponse> {
@@ -141,12 +140,12 @@ export async function getObservationsMonthlyTimeseries(
 export async function getObservationsMonthlyTimeseriesAllYears(
   req: Partial<ObservationStatsRequest>,
 ): Promise<ObservationMonthlyTimeseriesAllYearsResponse> {
-  const response = await fetcher.get<ObservationMonthlyTimeseriesAllYearsResponse>(
-    '/stats/observations/timeseries/monthly/all-years',
-    {
-      params: req,
-    },
-  )
+  const response =
+    await fetcher.get<ObservationMonthlyTimeseriesAllYearsResponse>(
+      '/stats/observations/timeseries/monthly/all-years',
+      {
+        params: req,
+      },
+    )
   return response.data
 }
-
