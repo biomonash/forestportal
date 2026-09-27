@@ -8,6 +8,7 @@ import {
 } from '../../../store/mapSlice'
 import FlyToUser from './FlyToUser'
 import type { ZonesGeoJSON } from '../../../helpers/siteLocation'
+import { yearEnd, yearStart } from '../../../helpers/yearRange'
 import { useEffect, useMemo, useState } from 'react'
 import {
   getObservationBlocks,
@@ -18,7 +19,7 @@ import { interpolateGreens, interpolateYlGn } from 'd3-scale-chromatic'
 const MAP_CENTER: [number, number] = [-37.6, 145.2]
 
 const locationPin = divIcon({
-  html: "<span style='font-size: 32px; line-height: 1; display: block;'>📍</span>",
+  html: "<span style='font-size: 32px; line-height: 1; display: block;'></span>",
   className: '',
   iconSize: [32, 32],
   iconAnchor: [16, 32],
@@ -56,8 +57,11 @@ export default function MapLayer({
     () => ({
       taxa: query.taxa,
       commonName: query.species,
+      from:
+        query.fromYear !== undefined ? yearStart(query.fromYear) : undefined,
+      to: query.toYear !== undefined ? yearEnd(query.toYear) : undefined,
     }),
-    [query],
+    [query.taxa, query.species, query.fromYear, query.toYear],
   )
   const [statsLookup, setStatsLookup] = useState<
     Record<
@@ -118,7 +122,7 @@ export default function MapLayer({
           setStatsLookup(lookup)
         }
       } catch (error) {
-        console.error('❌ loadDistribution failed:', error)
+        console.error(' loadDistribution failed:', error)
       }
     }
 

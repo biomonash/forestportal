@@ -30,6 +30,25 @@ function parseQuery(qs: string): MapQuery {
           query.tenure = value
         }
         break
+      case 'fromYear': {
+        const year = Number(value)
+
+        if (Number.isInteger(year)) {
+          query.fromYear = year
+        }
+
+        break
+      }
+
+      case 'toYear': {
+        const year = Number(value)
+
+        if (Number.isInteger(year)) {
+          query.toYear = year
+        }
+
+        break
+      }
     }
   }
   return query

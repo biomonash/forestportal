@@ -1,8 +1,8 @@
 import fetcher from '../lib/fetcher'
 
 export type ObservationStatsRequest = {
-  from: Date
-  to: Date
+  from: Date | string
+  to: Date | string
   blocks: number[]
   siteCodes: string[]
   taxa: string
