@@ -306,6 +306,36 @@ setup-dev: ## Setup development environment
 	go install -tags 'postgres' github.com/golang-migrate/migrate/v4/cmd/migrate@v4.19.0
 	go install github.com/swaggo/swag/cmd/swag@v1.16.6
 	@$(MAKE) install
+	@$(MAKE) setup-garage-env
+
+.PHONY: setup-garage-env
+setup-garage-env:
+	@echo "Setting up Garage environment variables..."
+	@if ! grep -q "^GARAGE_RPC_SECRET=" .env; then \
+		echo "GARAGE_RPC_SECRET=$$(openssl rand -hex 32)" >> .env; \
+	elif grep -q "^GARAGE_RPC_SECRET=$$" .env; then \
+		sed -i.bak "s|^GARAGE_RPC_SECRET=$$|GARAGE_RPC_SECRET=$$(openssl rand -hex 32)|" .env; \
+	fi
+	@if ! grep -q "^GARAGE_ADMIN_TOKEN=" .env; then \
+		echo "GARAGE_ADMIN_TOKEN=$$(openssl rand -base64 32)" >> .env; \
+	elif grep -q "^GARAGE_ADMIN_TOKEN=$$" .env; then \
+		sed -i.bak "s|^GARAGE_ADMIN_TOKEN=$$|GARAGE_ADMIN_TOKEN=$$(openssl rand -base64 32)|" .env; \
+	fi
+	@if ! grep -q "^GARAGE_DEFAULT_ACCESS_KEY=" .env; then \
+		echo "GARAGE_DEFAULT_ACCESS_KEY=GK$$(openssl rand -hex 15)" >> .env; \
+	elif grep -q "^GARAGE_DEFAULT_ACCESS_KEY=$$" .env; then \
+		sed -i.bak "s|^GARAGE_DEFAULT_ACCESS_KEY=$$|GARAGE_DEFAULT_ACCESS_KEY=GK$$(openssl rand -hex 15)|" .env; \
+	fi
+	@if ! grep -q "^GARAGE_DEFAULT_SECRET_KEY=" .env; then \
+		echo "GARAGE_DEFAULT_SECRET_KEY=$$(openssl rand -hex 32)" >> .env; \
+	elif grep -q "^GARAGE_DEFAULT_SECRET_KEY=$$" .env; then \
+		sed -i.bak "s|^GARAGE_DEFAULT_SECRET_KEY=$$|GARAGE_DEFAULT_SECRET_KEY=$$(openssl rand -hex 32)|" .env; \
+	fi
+	@if ! grep -q "^GARAGE_DEFAULT_BUCKET=" .env; then \
+		echo "GARAGE_DEFAULT_BUCKET=forestportal-data" >> .env; \
+	fi
+	@rm -f .env.bak
+	@echo "Garage environment variables configured."
 
 .PHONY: check
 check: ## Run all checks (lint, test, build)
