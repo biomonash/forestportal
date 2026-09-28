@@ -60,7 +60,7 @@ export default function EditForm<T>({
                                 className="mt-1 w-full px-3 py-2 rounded-lg bg-white/10 text-white border border-white/10 focus:outline-none focus:border-[#216869]"
                             >
                                 {field.options?.map((opt) => (
-                                    <option key={opt.value} value={opt.value}>{opt.label}</option>
+                                    <option className='text-black' key={opt.value} value={opt.value}>{opt.label}</option>
                                 ))}
                             </select>
                         ) : (
