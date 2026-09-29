@@ -1,10 +1,7 @@
 import { useEffect, useState } from 'react'
 import { ResponsiveBar } from '@nivo/bar'
-import {
-  getObservationsMonthlyTimeseries,
-  getObservationsMonthlyTimeseriesAllYears,
-} from '../../../../apis/stats.api'
-import type { TimeseriesPoint, MonthlyPoint } from '../../../../apis/stats.api'
+import { getObservationsMonthlyTimeseriesAllYears } from '../../../../apis/stats.api'
+import type {  MonthlyPoint } from '../../../../apis/stats.api'
 type MonthEntry = { month: string; Native: number; Invasive: number }
 
 const MONTH_NAMES = [
@@ -36,13 +33,14 @@ export const MonthlyBarChart = ({ year }: { year: string }) => {
   const [data, setData] = useState<MonthEntry[]>([])
   //Call based on if all is pressed
   useEffect(() => {
-    const request =
+    const request = getObservationsMonthlyTimeseriesAllYears(
       year === 'all'
-        ? getObservationsMonthlyTimeseriesAllYears({})
-        : getObservationsMonthlyTimeseries({
+        ? {}
+        : {
             from: new Date(`${year}-01-01`),
-            to: new Date(`${year}-12-31`),
-          })
+            to: new Date(`${year}-12-31T23:59:59Z`),
+          },
+    )
 
     request
       .then((res) => {
@@ -58,11 +56,8 @@ export const MonthlyBarChart = ({ year }: { year: string }) => {
                 ? 'Native'
                 : 'Invasive'
 
-            points.forEach((p: TimeseriesPoint | MonthlyPoint) => {
-              const monthName =
-                'month' in p
-                  ? MONTH_NAMES[p.month - 1]
-                  : MONTH_NAMES[new Date(p.timestamp).getMonth()]
+            points.forEach((p: MonthlyPoint) => {
+              const monthName = MONTH_NAMES[p.month - 1]
               monthMap[monthName][normalizedType] += p.speciesCount
             })
           })

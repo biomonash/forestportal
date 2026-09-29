@@ -23,10 +23,6 @@ type TimeSeriesPoint struct {
 	ObservationStats
 }
 
-type ObservationMonthlyTimeSeriesRequest struct {
-	ObservationStatsInput
-}
-
 type ObservationMonthlyTimeSeriesAllYearsRequest struct {
 	ObservationStatsInput
 }

@@ -267,67 +267,6 @@ func (q *Queries) ObservationGroupBySites(ctx context.Context, arg ObservationGr
 	return items, nil
 }
 
-const observationMonthFilteredTimeSeriesGroupByNative = `-- name: ObservationMonthFilteredTimeSeriesGroupByNative :many
-SELECT native as is_native, date_trunc('month', "timestamp")::timestamp AS month, COUNT(DISTINCT species_id) AS species_count, COUNT(*) AS observation_count
-FROM observations_with_details
-WHERE ($1::timestamp IS NULL OR "timestamp" >= $1::timestamp)
-  AND ($2::timestamp IS NULL OR "timestamp" <= $2::timestamp)
-  AND ($3::int[] IS NULL OR block = ANY($3))
-  AND ($4::text[] IS NULL OR site_code = ANY($4))
-  AND ($5::taxa IS NULL OR taxa = $5::taxa)
-  AND ($6::text IS NULL OR LOWER(common_name) = LOWER($6::text))
-GROUP BY month, native
-ORDER BY month
-`
-
-type ObservationMonthFilteredTimeSeriesGroupByNativeParams struct {
-	From       pgtype.Timestamp `json:"from"`
-	To         pgtype.Timestamp `json:"to"`
-	Blocks     []int32          `json:"blocks"`
-	SiteCodes  []string         `json:"siteCodes"`
-	Taxa       NullTaxa         `json:"taxa"`
-	CommonName *string          `json:"commonName"`
-}
-
-type ObservationMonthFilteredTimeSeriesGroupByNativeRow struct {
-	IsNative         bool      `json:"isNative"`
-	Month            time.Time `json:"month"`
-	SpeciesCount     int64     `json:"speciesCount"`
-	ObservationCount int64     `json:"observationCount"`
-}
-
-func (q *Queries) ObservationMonthFilteredTimeSeriesGroupByNative(ctx context.Context, arg ObservationMonthFilteredTimeSeriesGroupByNativeParams) ([]ObservationMonthFilteredTimeSeriesGroupByNativeRow, error) {
-	rows, err := q.db.Query(ctx, observationMonthFilteredTimeSeriesGroupByNative,
-		arg.From,
-		arg.To,
-		arg.Blocks,
-		arg.SiteCodes,
-		arg.Taxa,
-		arg.CommonName,
-	)
-	if err != nil {
-		return nil, err
-	}
-	defer rows.Close()
-	items := []ObservationMonthFilteredTimeSeriesGroupByNativeRow{}
-	for rows.Next() {
-		var i ObservationMonthFilteredTimeSeriesGroupByNativeRow
-		if err := rows.Scan(
-			&i.IsNative,
-			&i.Month,
-			&i.SpeciesCount,
-			&i.ObservationCount,
-		); err != nil {
-			return nil, err
-		}
-		items = append(items, i)
-	}
-	if err := rows.Err(); err != nil {
-		return nil, err
-	}
-	return items, nil
-}
-
 const observationMonthForAllYearFilteredTimeSeriesGroupByNative = `-- name: ObservationMonthForAllYearFilteredTimeSeriesGroupByNative :many
 SELECT native as is_native, EXTRACT(MONTH FROM "timestamp")::int AS month, COUNT(DISTINCT species_id) AS species_count, COUNT(*) AS observation_count
 FROM observations_with_details

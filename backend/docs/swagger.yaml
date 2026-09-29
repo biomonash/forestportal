@@ -226,15 +226,6 @@ definitions:
           type: array
         type: object
     type: object
-  stats.ObservationMonthlyTimeSeriesResponse:
-    properties:
-      series:
-        additionalProperties:
-          items:
-            $ref: '#/definitions/stats.TimeSeriesPoint'
-          type: array
-        type: object
-    type: object
   stats.ObservationOverviewResponse:
     properties:
       countByTaxa:
@@ -746,55 +737,6 @@ paths:
           schema:
             $ref: '#/definitions/stats.ObservationTimeSeriesResponse'
       summary: Observation time series
-      tags:
-      - statistics
-  /stats/observations/timeseries/monthly:
-    get:
-      consumes:
-      - application/json
-      description: Observation counts grouped by month for a given date range (e.g.
-        one year)
-      parameters:
-      - description: Search start from
-        format: date-time
-        in: query
-        name: from
-        type: string
-      - description: Search end to
-        format: date-time
-        in: query
-        name: to
-        type: string
-      - collectionFormat: multi
-        description: Filter by site block
-        in: query
-        items:
-          type: integer
-        name: block[]
-        type: array
-      - collectionFormat: multi
-        description: Filter by site code
-        in: query
-        items:
-          type: string
-        name: siteCode[]
-        type: array
-      - description: Filter by taxa
-        in: query
-        name: taxa
-        type: string
-      - description: Filter by species common name
-        in: query
-        name: commonName
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/stats.ObservationMonthlyTimeSeriesResponse'
-      summary: Observation monthly time series
       tags:
       - statistics
   /stats/observations/timeseries/monthly/all-years:
