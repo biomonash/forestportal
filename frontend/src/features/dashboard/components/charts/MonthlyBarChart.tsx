@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { ResponsiveBar } from '@nivo/bar'
 import { getObservationsMonthlyTimeseriesAllYears } from '../../../../apis/stats.api'
-import type {  MonthlyPoint } from '../../../../apis/stats.api'
+import type { MonthlyPoint } from '../../../../apis/stats.api'
 type MonthEntry = { month: string; Native: number; Invasive: number }
 
 const MONTH_NAMES = [
