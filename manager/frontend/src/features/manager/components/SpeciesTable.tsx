@@ -1,14 +1,12 @@
 import { useEffect, useState } from 'react'
 import { listSpecies, type Species } from '../../../apis/manager.api'
 import DataTable from './Table'
+import EditSpeciesForm from './EditSpeciesForm'
 
-interface Props {
-    onEdit: (species: Species) => void
-}
-
-export default function SpeciesTable({ onEdit }: Props) {
+export default function SpeciesTable() {
     const [species, setSpecies] = useState<Species[]>([])
     const [loading, setLoading] = useState(true)
+    const [editing, setEditing] = useState<Species | null>(null)
 
     useEffect(() => {
         listSpecies().then(setSpecies).finally(() => setLoading(false))
@@ -35,5 +33,19 @@ export default function SpeciesTable({ onEdit }: Props) {
         { header: 'IUCN', render: (s: Species) => <span className="text-muted-foreground">{s.iucnStatus ?? '—'}</span> },
     ]
 
-    return <DataTable data={species} columns={columns} searchKeys={['commonName', 'scientificName']} loading={loading} onEdit={onEdit} />
+    return (
+        <>
+            <DataTable data={species} columns={columns} searchKeys={['commonName', 'scientificName']} loading={loading} onEdit={setEditing} />
+            {editing && (
+                <EditSpeciesForm
+                    species={editing}
+                    onClose={() => setEditing(null)}
+                    onSaved={(updated) => {
+                        setSpecies((prev) => prev.map((s) => (s.id === updated.id ? updated : s)))
+                        setEditing(null)
+                    }}
+                />
+            )}
+        </>
+    )
 }
