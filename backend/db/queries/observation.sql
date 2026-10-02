@@ -108,3 +108,8 @@ WHERE id > sqlc.arg('next')::int
 ORDER BY "id"
 LIMIT sqlc.arg('limit')
 ;
+
+-- name: GetObservationByKey :one
+SELECT id FROM observations
+WHERE site_id = $1 AND species_id = $2 AND "timestamp" = $3
+LIMIT 1;

@@ -255,6 +255,25 @@ func (q *Queries) GetObservation(ctx context.Context, id int64) (Observation, er
 	return i, err
 }
 
+const getObservationByKey = `-- name: GetObservationByKey :one
+SELECT id FROM observations
+WHERE site_id = $1 AND species_id = $2 AND "timestamp" = $3
+LIMIT 1
+`
+
+type GetObservationByKeyParams struct {
+	SiteID    int64     `json:"siteId"`
+	SpeciesID int64     `json:"speciesId"`
+	Timestamp time.Time `json:"timestamp"`
+}
+
+func (q *Queries) GetObservationByKey(ctx context.Context, arg GetObservationByKeyParams) (int64, error) {
+	row := q.db.QueryRow(ctx, getObservationByKey, arg.SiteID, arg.SpeciesID, arg.Timestamp)
+	var id int64
+	err := row.Scan(&id)
+	return id, err
+}
+
 const listObservations = `-- name: ListObservations :many
 SELECT id, site_id, species_id, "timestamp", method, appearance_start, appearance_end, temperature, narrative, confidence, file
 FROM observations

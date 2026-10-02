@@ -181,3 +181,42 @@ func (u *Controller) GetObservedSpecies(c *gin.Context) {
 		Species: result,
 	})
 }
+
+// UpdateSpeciesManager godoc
+//
+//	@Summary		Update species for manager api
+//	@Description	Update species fields excluding common and scientific name
+//	@Tags			species
+//	@Param			id	path	int	true	"species id"		
+//	@Param			body		body	db.UpdateSpeciesManagerParams		true	"species fields to update"
+//	@Accept			json
+//	@Produce		json
+//	@Success		200	{object}	db.Species
+//	@Router			/species/{id} [put]
+func (u *Controller) UpdateSpeciesManager(c *gin.Context) {
+	idStr := c.Param("id")
+	id, err := strconv.Atoi(idStr)
+	if err != nil {
+		c.Error(utils.NewHttpError(400, "invalid id", err))
+		return
+	}
+
+	var req db.UpdateSpeciesManagerParams
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.Error(utils.NewHttpError(400, "failed to parse input", err))
+		return
+	}
+	req.ID = int64(id)
+
+	species, err := u.q.UpdateSpeciesManager(c.Request.Context(), req)
+	if errors.Is(pgx.ErrNoRows, err) {
+		c.Error(utils.NewHttpError(404, "species not found", err))
+		return
+	}
+	if err != nil {
+		c.Error(fmt.Errorf("failed to update species: %w", err))
+		return
+	}
+
+	c.JSON(200, species)
+}
