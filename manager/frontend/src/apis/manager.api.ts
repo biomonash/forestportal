@@ -1,6 +1,13 @@
 import { MANAGER_API_URL } from "../constants/api"
 
-export async function uploadCSV(file: File): Promise<{ message: string }> {
+export type ImportResult = {
+    observationsInserted: number
+    observationsSkipped: number
+    sitesCreated: number
+    speciesCreated: number
+}
+
+export async function uploadCSV(file: File): Promise<ImportResult> {
     const formData = new FormData()
     formData.append('file', file)
 

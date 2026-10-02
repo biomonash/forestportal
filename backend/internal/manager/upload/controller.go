@@ -49,12 +49,11 @@ func (u *Controller) UploadCSV(c *gin.Context) {
 	}
 	defer os.Remove(tmpPath)
 
-	if err := importer.ImportCSV(c.Request.Context(), u.q.(*db.Queries), tmpPath); err != nil {
+	result, err := importer.ImportCSV(c.Request.Context(), u.q.(*db.Queries), tmpPath)
+	if err != nil {
 		c.Error(fmt.Errorf("failed to import CSV: %w", err))
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{
-		"message": "CSV imported successfully",
-	})
+	c.JSON(http.StatusOK, result)
 }

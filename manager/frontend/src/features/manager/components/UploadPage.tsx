@@ -1,5 +1,5 @@
 import { useState, useRef } from 'react'
-import { uploadCSV } from '../../../apis/manager.api'
+import { uploadCSV, type ImportResult } from '../../../apis/manager.api'
 
 export default function UploadPage() {
   const [file, setFile] = useState<File | null>(null)
@@ -7,6 +7,7 @@ export default function UploadPage() {
     'idle' | 'uploading' | 'success' | 'error'
   >('idle')
   const [message, setMessage] = useState('')
+  const [result, setResult] = useState<ImportResult | null>(null)
   const inputRef = useRef<HTMLInputElement>(null)
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -25,11 +26,12 @@ export default function UploadPage() {
 
     setStatus('uploading')
     setMessage('')
+    setResult(null)
 
     try {
       const data = await uploadCSV(file)
       setStatus('success')
-      setMessage(data.message)
+      setResult(data)
     } catch (err) {
       setStatus('error')
       setMessage(err instanceof Error ? err.message : 'Upload failed')
@@ -80,6 +82,18 @@ export default function UploadPage() {
           >
             {message}
           </p>
+        )}
+
+        {result && (
+          <div className="mt-4 rounded-xl bg-white/10 p-4 text-sm">
+            <p className="text-white font-semibold mb-2">Import complete</p>
+            <ul className="text-muted-foreground space-y-1">
+              <li>{result.observationsInserted.toLocaleString()} observations inserted</li>
+              <li>{result.observationsSkipped.toLocaleString()} observations skipped as duplicates</li>
+              <li>{result.sitesCreated} new sites</li>
+              <li>{result.speciesCreated} new species</li>
+            </ul>
+          </div>
         )}
       </div>
     </div>
