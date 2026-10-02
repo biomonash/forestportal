@@ -16,11 +16,11 @@ export default function SitesTable({ onEdit }: Props) {
 
     const columns = [
         { header: 'Code', render: (s: Site) => <span className="text-white">{s.code}</span> },
-        { header: 'Name', render: (s: Site) => <span className="text-[var(--muted-foreground)]">{s.name ?? '—'}</span> },
-        { header: 'Block', render: (s: Site) => <span className="text-[var(--muted-foreground)]">{s.block}</span> },
-        { header: 'Forest', render: (s: Site) => <span className="capitalize text-[var(--muted-foreground)]">{s.forest}</span> },
-        { header: 'Tenure', render: (s: Site) => <span className="capitalize text-[var(--muted-foreground)]">{s.tenure}</span> },
-        { header: 'Location', render: (s: Site) => <span className="text-[var(--muted-foreground)]">{s.location ?? '—'}</span> },
+        { header: 'Name', render: (s: Site) => <span className="text-muted-foreground">{s.name ?? '—'}</span> },
+        { header: 'Block', render: (s: Site) => <span className="text-muted-foreground">{s.block}</span> },
+        { header: 'Forest', render: (s: Site) => <span className="capitalize text-muted-foreground">{s.forest}</span> },
+        { header: 'Tenure', render: (s: Site) => <span className="capitalize text-muted-foreground">{s.tenure}</span> },
+        { header: 'Location', render: (s: Site) => <span className="text-muted-foreground">{s.location ?? '—'}</span> },
     ]
 
     return <DataTable data={sites} columns={columns} searchKeys={['code', 'name']} loading={loading} onEdit={onEdit} />

@@ -46,9 +46,9 @@ export default function UploadPage() {
           onClick={() => inputRef.current?.click()}
           onDrop={handleDrop}
           onDragOver={(e) => e.preventDefault()}
-          className="border-2 border-dashed border-[var(--muted-foreground)] rounded-xl p-12 text-center cursor-pointer hover:border-[#216869] transition-colors mt-6"
+          className="border-2 border-dashed border-muted-foreground rounded-xl p-12 text-center cursor-pointer hover:border-sidebar transition-colors mt-6"
         >
-          <p className="text-[var(--muted-foreground)] text-sm">
+          <p className="text-muted-foreground text-sm">
             {file
               ? file.name
               : 'Drag and drop a CSV file here, or click to browse'}
@@ -67,7 +67,7 @@ export default function UploadPage() {
           <button
             onClick={handleUpload}
             disabled={status === 'uploading'}
-            className="mt-4 w-full bg-[#216869] text-white py-2 rounded-lg font-semibold hover:bg-[#1a5254] disabled:opacity-50 transition-colors"
+            className="mt-4 w-full bg-sidebar text-white py-2 rounded-lg font-semibold hover:bg-sidebar-hover disabled:opacity-50 transition-colors"
           >
             {status === 'uploading' ? 'Uploading...' : 'Upload'}
           </button>

@@ -16,19 +16,19 @@ const Manager: React.FC = (): JSX.Element => {
       <div className="flex gap-4 mb-8">
         <button
           onClick={() => setTab('upload')}
-          className={`px-4 py-2 rounded-lg text-sm font-semibold transition-colors ${tab === 'upload' ? 'bg-[#216869] text-white' : 'bg-white/10 text-[var(--muted-foreground)] hover:bg-white/20'}`}
+          className={`px-4 py-2 rounded-lg text-sm font-semibold transition-colors ${tab === 'upload' ? 'bg-sidebar text-white' : 'bg-white/10 text-muted-foreground hover:bg-white/20'}`}
         >
           Upload CSV
         </button>
         <button
           onClick={() => setTab('species')}
-          className={`px-4 py-2 rounded-lg text-sm font-semibold transition-colors ${tab === 'species' ? 'bg-[#216869] text-white' : 'bg-white/10 text-[var(--muted-foreground)] hover:bg-white/20'}`}
+          className={`px-4 py-2 rounded-lg text-sm font-semibold transition-colors ${tab === 'species' ? 'bg-sidebar text-white' : 'bg-white/10 text-muted-foreground hover:bg-white/20'}`}
         >
           Species
         </button>
         <button
           onClick={() => setTab('sites')}
-          className={`px-4 py-2 rounded-lg text-sm font-semibold transition-colors ${tab === 'sites' ? 'bg-[#216869] text-white' : 'bg-white/10 text-[var(--muted-foreground)] hover:bg-white/20'}`}
+          className={`px-4 py-2 rounded-lg text-sm font-semibold transition-colors ${tab === 'sites' ? 'bg-sidebar text-white' : 'bg-white/10 text-muted-foreground hover:bg-white/20'}`}
         >
           Sites
         </button>
