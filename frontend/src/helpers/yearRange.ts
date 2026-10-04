@@ -1,9 +1,18 @@
-export function yearStart(year: number): string {
-  return `${year}-01-01`
+import { endOfYear, getYear, startOfYear } from 'date-fns'
+import { utc } from '@date-fns/utc'
+
+// Dates are built in UTC so toISOString() keeps the same calendar day.
+// The backend only reads the yyyy-MM-dd part of the serialised date.
+export function yearToStartDate(year: number): Date {
+  return startOfYear(Date.UTC(year, 0, 1), { in: utc })
 }
 
-export function yearEnd(year: number): string {
-  return `${year}-12-31`
+export function yearToEndDate(year: number): Date {
+  return endOfYear(Date.UTC(year, 0, 1), { in: utc })
+}
+
+export function dateToYear(date: Date): number {
+  return getYear(date, { in: utc })
 }
 
 export function clampYear(year: number, minYear: number, maxYear: number) {

@@ -2,6 +2,11 @@ import MapView from './components/MapView'
 import { useAppDispatch, useAppSelector } from '../../hooks/redux'
 import { init, selectQuery, type MapQuery } from '../../store/mapSlice'
 import { useEffect, useState } from 'react'
+import {
+  dateToYear,
+  yearToEndDate,
+  yearToStartDate,
+} from '../../helpers/yearRange'
 
 function parseQuery(qs: string): MapQuery {
   const query: MapQuery = {}
@@ -34,7 +39,7 @@ function parseQuery(qs: string): MapQuery {
         const year = Number(value)
 
         if (Number.isInteger(year)) {
-          query.fromYear = year
+          query.from = yearToStartDate(year)
         }
 
         break
@@ -44,7 +49,7 @@ function parseQuery(qs: string): MapQuery {
         const year = Number(value)
 
         if (Number.isInteger(year)) {
-          query.toYear = year
+          query.to = yearToEndDate(year)
         }
 
         break
@@ -71,14 +76,19 @@ export default function MapPage() {
     if (!loaded) return
 
     const params = new URLSearchParams()
+    const { from, to, ...rest } = query
 
-    Object.entries(query).forEach(([k, v]) => {
+    Object.entries(rest).forEach(([k, v]) => {
       if (v === undefined || v === null) return
 
       if (Array.isArray(v) && v.length === 0) return
 
       params.append(k, String(v))
     })
+
+    // Keep shared links readable: dates are written back as years.
+    if (from) params.append('fromYear', String(dateToYear(from)))
+    if (to) params.append('toYear', String(dateToYear(to)))
 
     history.pushState(null, '', `?${params.toString()}`)
   }, [query, loaded])

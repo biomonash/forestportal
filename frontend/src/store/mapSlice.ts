@@ -8,7 +8,11 @@ import {
 import { getSiteList } from '../apis/sites.api'
 import { getObservedSpecies, getSpeciesList } from '../apis/species.api'
 import type { ObservedSpecies, Site, Species } from '../types'
-import { yearEnd, yearStart } from '../helpers/yearRange'
+import {
+  dateToYear,
+  yearToEndDate,
+  yearToStartDate,
+} from '../helpers/yearRange'
 
 export type MapQuery = Partial<{
   blocks: number[]
@@ -16,8 +20,8 @@ export type MapQuery = Partial<{
   taxa: string
   species: string
   tenure: 'Public' | 'Private'
-  fromYear: number
-  toYear: number
+  from: Date
+  to: Date
 }>
 
 interface MapState {
@@ -128,15 +132,15 @@ const mapSlice = createSlice({
     setObservedSpecies(state, action: PayloadAction<ObservedSpecies[]>) {
       state.observedSpecies = action.payload
     },
-    setYearRange(
+    setDateRange(
       state,
       action: PayloadAction<{
-        fromYear: number | null
-        toYear: number | null
+        from: Date | null
+        to: Date | null
       }>,
     ) {
-      state.query.fromYear = action.payload.fromYear ?? undefined
-      state.query.toYear = action.payload.toYear ?? undefined
+      state.query.from = action.payload.from ?? undefined
+      state.query.to = action.payload.to ?? undefined
     },
 
     setAvailableYears(state, action: PayloadAction<number[]>) {
@@ -159,7 +163,7 @@ const {
   reset,
   setSelectedTenure,
   setObservedSpecies,
-  setYearRange,
+  setDateRange,
   setAvailableYears,
 } = mapSlice.actions
 
@@ -171,12 +175,9 @@ function updateQuery() {
       sites: site,
       taxa,
       species,
-      fromYear,
-      toYear,
+      from,
+      to,
     } = getState().map.query
-    const from = fromYear !== undefined ? yearStart(fromYear) : undefined
-    const to = toYear !== undefined ? yearEnd(toYear) : undefined
-
     const params = {
       block,
       siteCode: site,
@@ -226,7 +227,7 @@ export function init(query: MapQuery) {
 
     const years = Object.values(timeseries.series)
       .flat()
-      .map((point) => new Date(point.timestamp).getFullYear())
+      .map((point) => dateToYear(new Date(point.timestamp)))
 
     const uniqueYears = [...new Set(years)].sort((a, b) => a - b)
 
@@ -298,9 +299,9 @@ export function updateYearRange(
 ) {
   return (dispatch: AppDispatch) => {
     dispatch(
-      setYearRange({
-        fromYear,
-        toYear,
+      setDateRange({
+        from: fromYear !== null ? yearToStartDate(fromYear) : null,
+        to: toYear !== null ? yearToEndDate(toYear) : null,
       }),
     )
 
@@ -326,9 +327,15 @@ export const selectTenure = (state: RootState) => state.map.query.tenure
 export const selectObservedSpecies = (state: RootState) =>
   state.map.observedSpecies
 
-export const selectFromYear = (state: RootState) => state.map.query.fromYear
+export const selectFrom = (state: RootState) => state.map.query.from
 
-export const selectToYear = (state: RootState) => state.map.query.toYear
+export const selectTo = (state: RootState) => state.map.query.to
+
+export const selectFromYear = (state: RootState) =>
+  state.map.query.from ? dateToYear(state.map.query.from) : undefined
+
+export const selectToYear = (state: RootState) =>
+  state.map.query.to ? dateToYear(state.map.query.to) : undefined
 
 export const selectAvailableYears = (state: RootState) =>
   state.map.availableYears
