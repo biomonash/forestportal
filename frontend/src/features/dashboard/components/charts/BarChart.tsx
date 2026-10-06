@@ -77,7 +77,7 @@ export const BarChart = ({
           enableLabel={true}
           labelSkipHeight={12}
           labelTextColor="#000000"
-          onClick={(datum) => onYearClick?.(String(datum.indexValue))}
+          onClick={(yearBar) => onYearClick?.(String(yearBar.indexValue))}
           axisBottom={{
             legend: 'Year',
             legendPosition: 'middle',

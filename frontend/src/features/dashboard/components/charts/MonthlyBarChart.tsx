@@ -51,10 +51,7 @@ export const MonthlyBarChart = ({ year }: { year: string }) => {
           })
 
           Object.entries(res.series).forEach(([type, points]) => {
-            const normalizedType =
-              type.toLowerCase().includes('native') || type === 'true'
-                ? 'Native'
-                : 'Invasive'
+            const normalizedType = type === 'native' ? 'Native' : 'Invasive'
 
             points.forEach((p: MonthlyPoint) => {
               const monthName = MONTH_NAMES[p.month - 1]

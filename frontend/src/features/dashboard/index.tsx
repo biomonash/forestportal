@@ -24,7 +24,7 @@ import { MonthlyBarChart } from './components/charts/MonthlyBarChart'
 const Dashboard: React.FC = () => {
   const [stats, setStats] = useState<DashboardStatsResponse | null>(null)
   const [searchParams, setSearchParams] = useSearchParams()
-  const [drilldownYear, setDrilldownYear] = useState<string | null>(null)
+  const [drilldownYear, setDrilldownYear] = useState<string | null>('all')
 
   const startYear = searchParams.get('startYear') || ''
   const endYear = searchParams.get('endYear') || ''
