@@ -69,10 +69,10 @@ const Dashboard: React.FC = () => {
       <div className="flex flex-wrap justify-between items-center gap-4">
         <div>
           <h1 className="text-4xl font-bold text-foreground m-0">
-            Ecological Monitoring Dashboard
+            Nillumbik Forest Portal
           </h1>
           <p className="mt-1 text-[var(--muted-foreground)]">
-            Real-time environmental data from across Nillumbik Shire
+            Environmental data from across Nillumbik Shire
           </p>
         </div>
         <div className="flex items-center gap-3 bg-sidebar/50 p-2 rounded-lg border border-white/10">

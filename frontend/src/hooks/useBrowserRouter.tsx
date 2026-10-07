@@ -1,6 +1,5 @@
 import { lazy } from 'react'
 import routes from '../constants/route'
-import { Navigate } from 'react-router'
 import { createBrowserRouter } from 'react-router'
 import MainLayout from '../layouts/MainLayout/MainLayout.tsx'
 
@@ -25,10 +24,6 @@ const useBrowserRouter = () => {
         path: '/',
         Component: MainLayout,
         children: [
-          {
-            index: true,
-            Component: () => <Navigate to={routes.DASHBOARD} replace />,
-          },
           {
             path: routes.HOME,
             Component: Home,
