@@ -13,6 +13,7 @@
     "format:check": "prettier --check ."
   },
   "dependencies": {
+    "@date-fns/utc": "^2.1.1",
     "@fontsource/lato": "^5.2.6",
     "@mantine/core": "^8.2.8",
     "@mantine/hooks": "^8.2.8",
@@ -27,6 +28,7 @@
     "axios": "^1.11.0",
     "d3-scale": "^4.0.2",
     "d3-scale-chromatic": "^3.1.0",
+    "date-fns": "^4.4.0",
     "leaflet": "^1.9.4",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
