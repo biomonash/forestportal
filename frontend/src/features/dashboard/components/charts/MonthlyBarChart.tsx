@@ -1,8 +1,23 @@
 import { useEffect, useState } from 'react'
 import { ResponsiveBar } from '@nivo/bar'
-import { getObservationsTimeseries } from '../../../../apis/stats.api'
+import { getObservationsMonthlyTimeseriesAllYears } from '../../../../apis/stats.api'
+import type { MonthlyPoint } from '../../../../apis/stats.api'
+type MonthEntry = { month: string; Native: number; Invasive: number }
 
-type YearEntry = { year: string; Native: number; Invasive: number }
+const MONTH_NAMES = [
+  'Jan',
+  'Feb',
+  'Mar',
+  'Apr',
+  'May',
+  'Jun',
+  'Jul',
+  'Aug',
+  'Sep',
+  'Oct',
+  'Nov',
+  'Dec',
+]
 
 const chartTheme = {
   axis: {
@@ -14,53 +29,41 @@ const chartTheme = {
   tooltip: { container: { background: '#1a1a1a', color: '#ffffff' } },
 }
 
-export const BarChart = ({
-  startYear,
-  endYear,
-  onYearClick,
-}: {
-  startYear?: string
-  endYear?: string
-  onYearClick?: (year: string) => void
-}) => {
-  const [data, setData] = useState<YearEntry[]>([])
-
+export const MonthlyBarChart = ({ year }: { year: string }) => {
+  const [data, setData] = useState<MonthEntry[]>([])
+  //Call based on if all is pressed
   useEffect(() => {
-    const fromDate = startYear ? new Date(`${startYear}-01-01`) : undefined
-    const toDate = endYear ? new Date(`${endYear}-12-31`) : undefined
+    const request = getObservationsMonthlyTimeseriesAllYears(
+      year === 'all'
+        ? {}
+        : {
+            from: new Date(`${year}-01-01`),
+            to: new Date(`${year}-12-31T23:59:59Z`),
+          },
+    )
 
-    getObservationsTimeseries({ from: fromDate, to: toDate })
+    request
       .then((res) => {
         if (res && res.series) {
-          const yearMap: Record<string, YearEntry> = {}
+          const monthMap: Record<string, MonthEntry> = {}
+          MONTH_NAMES.forEach((m) => {
+            monthMap[m] = { month: m, Native: 0, Invasive: 0 }
+          })
 
           Object.entries(res.series).forEach(([type, points]) => {
-            const normalizedType =
-              type.toLowerCase().includes('native') || type === 'true'
-                ? 'Native'
-                : 'Invasive'
+            const normalizedType = type === 'native' ? 'Native' : 'Invasive'
 
-            points.forEach((p) => {
-              const rawDate = p.timestamp
-              const yearDate = rawDate ? new Date(rawDate) : new Date()
-              const yearStr = yearDate.getFullYear().toString()
-
-              if (!yearMap[yearStr]) {
-                yearMap[yearStr] = { year: yearStr, Native: 0, Invasive: 0 }
-              }
-
-              yearMap[yearStr][normalizedType] += p.speciesCount
+            points.forEach((p: MonthlyPoint) => {
+              const monthName = MONTH_NAMES[p.month - 1]
+              monthMap[monthName][normalizedType] += p.speciesCount
             })
           })
 
-          const finalData = Object.values(yearMap).sort((a, b) =>
-            a.year.localeCompare(b.year),
-          )
-          setData(finalData)
+          setData(Object.values(monthMap))
         }
       })
-      .catch((err) => console.error('BarChart API Error:', err))
-  }, [startYear, endYear])
+      .catch((err) => console.error('MonthlyBarChart API Error:', err))
+  }, [year])
 
   return (
     <div className="h-[300px]">
@@ -68,7 +71,7 @@ export const BarChart = ({
         <ResponsiveBar
           data={data}
           keys={['Native', 'Invasive']}
-          indexBy="year"
+          indexBy="month"
           margin={{ top: 50, right: 50, bottom: 50, left: 100 }}
           padding={0.3}
           valueScale={{ type: 'linear' }}
@@ -77,9 +80,8 @@ export const BarChart = ({
           enableLabel={true}
           labelSkipHeight={12}
           labelTextColor="#000000"
-          onClick={(yearBar) => onYearClick?.(String(yearBar.indexValue))}
           axisBottom={{
-            legend: 'Year',
+            legend: 'Month',
             legendPosition: 'middle',
             legendOffset: 40,
           }}
@@ -103,7 +105,7 @@ export const BarChart = ({
         />
       ) : (
         <div className="flex items-center justify-center h-full text-white">
-          Loading Year Data...
+          Loading Monthly Data...
         </div>
       )}
     </div>

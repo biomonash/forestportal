@@ -9,4 +9,5 @@ func Register(r gin.IRouter, ctl *Controller) {
 	g.GET("/observations/sites", ctl.ObservationBySites)
 	g.GET("/observations/blocks", ctl.ObservationByBlocks)
 	g.GET("/dashboard", ctl.DashboardStats)
+	g.GET("/observations/timeseries/monthly/all-years", ctl.ObservationMonthlyTimeSeriesAllYears)
 }
