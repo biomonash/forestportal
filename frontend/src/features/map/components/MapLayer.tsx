@@ -56,8 +56,10 @@ export default function MapLayer({
     () => ({
       taxa: query.taxa,
       commonName: query.species,
+      from: query.from,
+      to: query.to,
     }),
-    [query],
+    [query.taxa, query.species, query.from, query.to],
   )
   const [statsLookup, setStatsLookup] = useState<
     Record<
