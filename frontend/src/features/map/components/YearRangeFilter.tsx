@@ -8,17 +8,6 @@ import {
   updateYearRange,
 } from '../../../store/mapSlice'
 
-// Native range inputs are made transparent and click-through so the two
-// can overlap; only the thumbs are visible and receive pointer events.
-const RANGE_INPUT_CLASS = [
-  'absolute inset-0 m-0 h-5 w-full appearance-none bg-transparent pointer-events-none focus:outline-none',
-  '[&::-webkit-slider-runnable-track]:h-2.5 [&::-webkit-slider-runnable-track]:border-none [&::-webkit-slider-runnable-track]:bg-transparent',
-  '[&::-webkit-slider-thumb]:pointer-events-auto [&::-webkit-slider-thumb]:-mt-[5px] [&::-webkit-slider-thumb]:size-5 [&::-webkit-slider-thumb]:cursor-pointer [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:border-none [&::-webkit-slider-thumb]:bg-[#028a0f] [&::-webkit-slider-thumb]:shadow-[0_0_0_3px_#fff]',
-  '[&::-moz-range-track]:h-2.5 [&::-moz-range-track]:border-none [&::-moz-range-track]:bg-transparent [&::-moz-range-progress]:bg-transparent',
-  '[&::-moz-range-thumb]:pointer-events-auto [&::-moz-range-thumb]:size-5 [&::-moz-range-thumb]:cursor-pointer [&::-moz-range-thumb]:rounded-full [&::-moz-range-thumb]:border-none [&::-moz-range-thumb]:bg-[#028a0f] [&::-moz-range-thumb]:shadow-[0_0_0_3px_#fff]',
-  'focus-visible:[&::-webkit-slider-thumb]:shadow-[0_0_0_3px_#fff,0_0_0_6px_rgb(2_138_15/0.35)] focus-visible:[&::-moz-range-thumb]:shadow-[0_0_0_3px_#fff,0_0_0_6px_rgb(2_138_15/0.35)]',
-].join(' ')
-
 /**
  * Two overlapping native range inputs form the dual-handle slider.
  * Native inputs keep keyboard and screen-reader support without
@@ -206,7 +195,7 @@ export default function YearRangeFilter() {
             onTouchEnd={() => commit(draft)}
             onKeyUp={() => commit(draft)}
             aria-label="Start year"
-            className={RANGE_INPUT_CLASS}
+            className="year-range-input absolute inset-0 h-5 w-full"
             style={{
               zIndex: draftFrom >= maxYear ? 5 : 3,
             }}
@@ -224,7 +213,7 @@ export default function YearRangeFilter() {
             onTouchEnd={() => commit(draft)}
             onKeyUp={() => commit(draft)}
             aria-label="End year"
-            className={RANGE_INPUT_CLASS}
+            className="year-range-input absolute inset-0 h-5 w-full"
             style={{ zIndex: 4 }}
           />
         </div>
