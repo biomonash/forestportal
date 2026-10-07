@@ -5,6 +5,7 @@ import { init, selectObservedSpecies } from '../../store/mapSlice'
 import WildLifeCarousel from '../../components/ui/WildLifeCarousel'
 import homemap2 from '../../assets/image/homemap2.png'
 import dashboardsnap from '../../assets/image/dashboardsnap.png'
+import heroImage from '../../assets/image/forest-portal-hero.webp'
 import { useNavigate } from 'react-router'
 import route from '../../constants/route'
 
@@ -24,7 +25,6 @@ function SectionDivider({
 }
 
 const COLORS = {
-  hero: '#2f343d',
   carousel: '#e8f0dc',
   dashboard: '#1f2421',
   map: '#ffffff',
@@ -42,27 +42,15 @@ const Home: React.FC = (): JSX.Element => {
   return (
     <main className="w-full overflow-x-hidden flex flex-col">
       {/* Hero Sec */}
-      <div
-        className="w-full py-10 md:py-16"
-        style={{ backgroundColor: COLORS.hero }}
-      >
-        <Container fluid className="w-full min-w-0">
-          <div
-            className="w-full min-w-0 h-64 sm:h-80 md:h-[28rem]
-                       border-2 border-dashed border-grey-accent
-                       flex flex-col items-center justify-center gap-2 text-center px-4"
-          >
-            <span className="text-sm font-semibold uppercase tracking-wide text-text/50">
-              Hero Image Placeholder
-            </span>
-            <span className="text-xs text-text/40">
-              1600 × 600 recommended — swap in final asset when ready
-            </span>
-          </div>
-        </Container>
-      </div>
-
-      <SectionDivider topColor={COLORS.hero} bottomColor={COLORS.carousel} />
+      {/* Sized to the image's own 16:9 ratio so it fills edge to edge without
+          cropping the headline (top-left) or logo (bottom-right) */}
+      <section className="w-full min-w-0">
+        <img
+          src={heroImage}
+          alt="New Holland Honeyeater on a bottlebrush branch, with the heading 'The wildlife monitoring system' and the Forest Portal logo"
+          className="block w-full aspect-[16/9] object-cover object-center"
+        />
+      </section>
 
       {/* Wildlife carousel — bg lives inside WildLifeCarousel itself */}
       <Container fluid className="w-full min-w-0">
@@ -122,15 +110,14 @@ const Home: React.FC = (): JSX.Element => {
 
             <div className="flex-1 text-center md:text-left">
               <h2 className="text-xl font-bold text-[#1f2421] mb-3">
-                I am a placeholder
+                Explore Nillumbik Wildlife Through the Map
               </h2>
               <p className="text-sm md:text-base leading-relaxed text-[#1f2421]/70">
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-                eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
-                enim ad minim veniam, quis nostrud exercitation ullamco laboris
-                nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor
-                in reprehenderit in voluptate velit esse cillum dolore eu fugiat
-                nulla pariatur.
+                Discover wildlife observation data from across Nillumbik Shire
+                using the interactive map. Explore monitoring locations, species
+                records, and observation patterns across different areas, and
+                gain a clearer view of how wildlife is distributed throughout
+                the region.
               </p>
             </div>
           </div>
