@@ -108,3 +108,16 @@ WHERE id > sqlc.arg('next')::int
 ORDER BY "id"
 LIMIT sqlc.arg('limit')
 ;
+
+-- name: LinkRecordingToObservations :one
+WITH linked AS (
+  UPDATE observations o
+  SET file = sqlc.arg('file')::text
+  FROM sites s
+  WHERE o.site_id = s.id
+    AND s.code = sqlc.arg('site_code')::text
+    AND o.method = 'audio'
+    AND date_trunc('minute', o."timestamp") = date_trunc('minute', sqlc.arg('recorded_at')::timestamp)
+  RETURNING o.id
+)
+SELECT COUNT(*) FROM linked;

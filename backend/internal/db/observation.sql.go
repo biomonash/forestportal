@@ -255,6 +255,33 @@ func (q *Queries) GetObservation(ctx context.Context, id int64) (Observation, er
 	return i, err
 }
 
+const linkRecordingToObservations = `-- name: LinkRecordingToObservations :one
+WITH linked AS (
+  UPDATE observations o
+  SET file = $1::text
+  FROM sites s
+  WHERE o.site_id = s.id
+    AND s.code = $2::text
+    AND o.method = 'audio'
+    AND date_trunc('minute', o."timestamp") = date_trunc('minute', $3::timestamp)
+  RETURNING o.id
+)
+SELECT COUNT(*) FROM linked
+`
+
+type LinkRecordingToObservationsParams struct {
+	File       string    `json:"file"`
+	SiteCode   string    `json:"siteCode"`
+	RecordedAt time.Time `json:"recordedAt"`
+}
+
+func (q *Queries) LinkRecordingToObservations(ctx context.Context, arg LinkRecordingToObservationsParams) (int64, error) {
+	row := q.db.QueryRow(ctx, linkRecordingToObservations, arg.File, arg.SiteCode, arg.RecordedAt)
+	var count int64
+	err := row.Scan(&count)
+	return count, err
+}
+
 const listObservations = `-- name: ListObservations :many
 SELECT id, site_id, species_id, "timestamp", method, appearance_start, appearance_end, temperature, narrative, confidence, file
 FROM observations

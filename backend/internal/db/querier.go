@@ -31,6 +31,7 @@ type Querier interface {
 	GetSpecies(ctx context.Context, id int64) (Species, error)
 	GetSpeciesByCommonName(ctx context.Context, lower string) (Species, error)
 	GetSpeciesByScientificName(ctx context.Context, lower string) (Species, error)
+	LinkRecordingToObservations(ctx context.Context, arg LinkRecordingToObservationsParams) (int64, error)
 	ListObservations(ctx context.Context, arg ListObservationsParams) ([]Observation, error)
 	// ListObservedSpecies returns species observed within a time range.
 	// If site_code is NULL, results include all sites.

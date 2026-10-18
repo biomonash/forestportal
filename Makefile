@@ -15,6 +15,7 @@ DOCKER_DIR=docker
 GO_MAIN=cmd/api/main.go
 GO_IMPORTER=cmd/importer/main.go
 GO_IMG_IMPORTER=cmd/imgimporter/main.go
+GO_AUDIOLINK=cmd/audiolink/main.go
 GO_IUCN=cmd/iucn/main.go
 DOCKER_COMPOSE_FILE=docker/compose.yml
 # POSTGRESQL_URL=postgres://biom:supersecretpassword@localhost:5432/nillumbik?sslmode=disable
@@ -144,6 +145,10 @@ clean-backend: ## Clean Go build artifacts
 gen-doc:
 	@printf "$(GREEN)Generating Swagger API Documents...$(NC)\n"
 	@cd $(BACKEND_DIR) && swag fmt && swag init -g internal/server/server.go
+
+.PHONY: run-audiolink
+run-audiolink: ## Link Garage audio keys to observations.file (usage: make run-audiolink KEYS=keys.txt [LIVE=true])
+	@cd $(BACKEND_DIR) && go run $(GO_AUDIOLINK) $(abspath $(KEYS))
 
 # =============================================================================
 # Database Commands
