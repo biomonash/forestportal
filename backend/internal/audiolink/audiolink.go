@@ -14,7 +14,6 @@ import (
 	"github.com/jackc/pgx/v5/pgxpool"
 )
 
-// <SITE>_<YYYYMMDD>_<HHMMSS>.(mp3|wav)  (site may or may not be hyphenated, e.g. 1D5 or 1-D-5)
 var nameRe = regexp.MustCompile(`(?i)^([0-9A-Za-z-]+)_(\d{8})_(\d{6})\.(?:mp3|wav)$`)
 
 type Recording struct {
@@ -27,8 +26,6 @@ func ParseKey(key string) (Recording, error) {
 	if m == nil {
 		return Recording{}, fmt.Errorf("filename does not match <SITE>_<YYYYMMDD>_<HHMMSS>.mp3 or .wav")
 	}
-	// Built as a UTC wall-clock value: the timestamp column has no zone and the
-	// importer stored the spreadsheet's local wall-clock time.
 	t, err := time.ParseInLocation("20060102150405", m[2]+m[3], time.UTC)
 	if err != nil {
 		return Recording{}, err
@@ -36,7 +33,6 @@ func ParseKey(key string) (Recording, error) {
 	return Recording{SiteCode: strings.ReplaceAll(m[1], "-", ""), RecordedAt: t}, nil
 }
 
-// ReadKeys accepts plain keys, or `aws s3 ls --recursive` output (key = last field).
 func ReadKeys(file string) ([]string, error) {
 	f, err := os.Open(file)
 	if err != nil {
@@ -60,8 +56,6 @@ func ReadKeys(file string) ([]string, error) {
 	return keys, sc.Err()
 }
 
-// Link updates observations for every key. When live is false everything runs in
-// a transaction that is rolled back, so counts are real but nothing is written.
 func Link(ctx context.Context, pool *pgxpool.Pool, keys []string, live bool, shift time.Duration) error {
 	tx, err := pool.Begin(ctx)
 	if err != nil {
