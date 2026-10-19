@@ -113,3 +113,16 @@ LIMIT sqlc.arg('limit')
 SELECT id FROM observations
 WHERE site_id = $1 AND species_id = $2 AND "timestamp" = $3
 LIMIT 1;
+
+-- name: LinkRecordingToObservations :one
+WITH linked AS (
+  UPDATE observations o
+  SET file = sqlc.arg('file')::text
+  FROM sites s
+  WHERE o.site_id = s.id
+    AND s.code = sqlc.arg('site_code')::text
+    AND o.method = 'audio'
+    AND date_trunc('minute', o."timestamp") = date_trunc('minute', sqlc.arg('recorded_at')::timestamp)
+  RETURNING o.id
+)
+SELECT COUNT(*) FROM linked;
