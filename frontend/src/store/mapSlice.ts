@@ -8,6 +8,11 @@ import {
 import { getSiteList } from '../apis/sites.api'
 import { getObservedSpecies, getSpeciesList } from '../apis/species.api'
 import type { ObservedSpecies, Site, Species } from '../types'
+import {
+  dateToYear,
+  yearToEndDate,
+  yearToStartDate,
+} from '../helpers/yearRange'
 
 export type MapQuery = Partial<{
   blocks: number[]
@@ -15,6 +20,8 @@ export type MapQuery = Partial<{
   taxa: string
   species: string
   tenure: 'Public' | 'Private'
+  from: Date
+  to: Date
 }>
 
 interface MapState {
@@ -30,6 +37,7 @@ interface MapState {
   countByTaxa: Record<string, number>
   timeseries: Record<string, TimeseriesPoint[]>
   observedSpecies: ObservedSpecies[]
+  availableYears: number[]
 }
 
 const initialState: MapState = {
@@ -45,6 +53,9 @@ const initialState: MapState = {
   countByTaxa: {},
   timeseries: {},
   observedSpecies: [],
+  availableYears: [
+    2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025, 2026,
+  ],
 }
 
 const mapSlice = createSlice({
@@ -121,6 +132,20 @@ const mapSlice = createSlice({
     setObservedSpecies(state, action: PayloadAction<ObservedSpecies[]>) {
       state.observedSpecies = action.payload
     },
+    setDateRange(
+      state,
+      action: PayloadAction<{
+        from: Date | null
+        to: Date | null
+      }>,
+    ) {
+      state.query.from = action.payload.from ?? undefined
+      state.query.to = action.payload.to ?? undefined
+    },
+
+    setAvailableYears(state, action: PayloadAction<number[]>) {
+      state.availableYears = action.payload
+    },
   },
 })
 
@@ -138,17 +163,28 @@ const {
   reset,
   setSelectedTenure,
   setObservedSpecies,
+  setDateRange,
+  setAvailableYears,
 } = mapSlice.actions
 
 function updateQuery() {
   console.log('update qeury')
   return (dispatch: AppDispatch, getState: () => RootState) => {
-    const { blocks: block, sites: site, taxa, species } = getState().map.query
+    const {
+      blocks: block,
+      sites: site,
+      taxa,
+      species,
+      from,
+      to,
+    } = getState().map.query
     const params = {
       block,
       siteCode: site,
       taxa,
       commonName: species,
+      from,
+      to,
     }
     console.log('update query: ', params)
 
@@ -179,14 +215,35 @@ function updateQuery() {
 }
 
 export function init(query: MapQuery) {
-  return (dispatch: AppDispatch) => {
+  return async (dispatch: AppDispatch) => {
     dispatch(setQuery(query))
+
     getSiteList().then((sites) => dispatch(setSites(sites)))
     getSpeciesList().then((species) => dispatch(setSpecies(species)))
+
     dispatch(updateQuery())
+
+    const timeseries = await getObservationsTimeseries({})
+
+    const years = Object.values(timeseries.series)
+      .flat()
+      .map((point) => dateToYear(new Date(point.timestamp)))
+
+    const uniqueYears = [...new Set(years)].sort((a, b) => a - b)
+
+    if (uniqueYears.length > 0) {
+      const minYear = uniqueYears[0]
+      const maxYear = uniqueYears[uniqueYears.length - 1]
+
+      const fullSpan = Array.from(
+        { length: maxYear - minYear + 1 },
+        (_, index) => minYear + index,
+      )
+
+      dispatch(setAvailableYears(fullSpan))
+    }
   }
 }
-
 export function updateMode(mode: 'site' | 'block') {
   return (dispatch: AppDispatch) => {
     dispatch(setMode(mode))
@@ -236,6 +293,22 @@ export function updateSelectedTenure(tenure: 'Public' | 'Private' | null) {
   }
 }
 
+export function updateYearRange(
+  fromYear: number | null,
+  toYear: number | null,
+) {
+  return (dispatch: AppDispatch) => {
+    dispatch(
+      setDateRange({
+        from: fromYear !== null ? yearToStartDate(fromYear) : null,
+        to: toYear !== null ? yearToEndDate(toYear) : null,
+      }),
+    )
+
+    dispatch(updateQuery())
+  }
+}
+
 export const selectMode = (state: RootState) => state.map.mode
 export const selectQuery = (state: RootState) => state.map.query
 export const selectBlock = (state: RootState) => state.map.query.blocks
@@ -253,5 +326,18 @@ export const selectTimeSeries = (state: RootState) => state.map.timeseries
 export const selectTenure = (state: RootState) => state.map.query.tenure
 export const selectObservedSpecies = (state: RootState) =>
   state.map.observedSpecies
+
+export const selectFrom = (state: RootState) => state.map.query.from
+
+export const selectTo = (state: RootState) => state.map.query.to
+
+export const selectFromYear = (state: RootState) =>
+  state.map.query.from ? dateToYear(state.map.query.from) : undefined
+
+export const selectToYear = (state: RootState) =>
+  state.map.query.to ? dateToYear(state.map.query.to) : undefined
+
+export const selectAvailableYears = (state: RootState) =>
+  state.map.availableYears
 
 export default mapSlice.reducer

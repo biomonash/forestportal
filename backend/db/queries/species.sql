@@ -91,3 +91,13 @@ ORDER BY observation_count DESC;
 UPDATE species
 SET iucn_status = $1
 WHERE id = $2;
+
+-- name: UpdateSpeciesManager :one
+UPDATE species
+SET native = $2,
+    taxa = $3,
+    indicator = $4,
+    reportable = $5,
+    iucn_status = $6
+WHERE id = $1
+RETURNING id, scientific_name, common_name, native, taxa, indicator, reportable, images, iucn_status;

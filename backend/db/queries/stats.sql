@@ -38,6 +38,21 @@ WHERE (sqlc.narg('from')::timestamp IS NULL OR "timestamp" >= sqlc.narg('from'):
 GROUP BY year, native
 ORDER BY year;
 
+
+
+
+-- name: ObservationMonthForAllYearFilteredTimeSeriesGroupByNative :many
+SELECT native as is_native, EXTRACT(MONTH FROM "timestamp")::int AS month, COUNT(DISTINCT species_id) AS species_count, COUNT(*) AS observation_count
+FROM observations_with_details
+WHERE (sqlc.narg('from')::timestamp IS NULL OR "timestamp" >= sqlc.narg('from')::timestamp)
+  AND (sqlc.narg('to')::timestamp IS NULL OR "timestamp" <= sqlc.narg('to')::timestamp)
+  AND (sqlc.narg('blocks')::int[] IS NULL OR block = ANY(sqlc.narg('blocks')))
+  AND (sqlc.narg('site_codes')::text[] IS NULL OR site_code = ANY(sqlc.narg('site_codes')))
+  AND (sqlc.narg('taxa')::taxa IS NULL OR taxa = sqlc.narg('taxa')::taxa)
+  AND (sqlc.narg('common_name')::text IS NULL OR LOWER(common_name) = LOWER(sqlc.narg('common_name')::text))
+GROUP BY month, native
+ORDER BY month;
+
 -- name: ObservationGroupBySites :many
 SELECT site_code, COUNT(DISTINCT species_id) AS species_count, COUNT(*) AS observation_count
 FROM observations_with_details

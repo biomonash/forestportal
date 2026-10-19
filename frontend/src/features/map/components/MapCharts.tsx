@@ -25,10 +25,13 @@ import {
   selectTenure,
   updateSelectedTenure,
   updateSelectedSpecies,
+  selectFrom,
+  selectTo,
 } from '../../../store/mapSlice'
 import { useAppDispatch, useAppSelector } from '../../../hooks/redux'
 import Badge from '../../../components/ui/Badge'
 import { API_BASE_URL } from '../../../constants/api'
+import YearRangeFilter from './YearRangeFilter'
 
 function capitalize(text: string) {
   return text.charAt(0).toUpperCase() + text.slice(1).toLowerCase()
@@ -88,6 +91,8 @@ const MapCharts: React.FC = () => {
   const selectedTaxa = useSelector(selectTaxa)
   const selectedSpecies = useSelector(selectSpecies)
   const selectedTenure = useSelector(selectTenure)
+  const selectedFrom = useSelector(selectFrom)
+  const selectedTo = useSelector(selectTo)
 
   const stats = useSelector((state: RootState) => ({
     total: state.map.totalObservations,
@@ -133,10 +138,20 @@ const MapCharts: React.FC = () => {
     }
     if (selectedTaxa) params.append('taxa', selectedTaxa)
     if (selectedSpecies) params.append('commonName', selectedSpecies)
+    // Same format axios uses for Date params; the backend drops the time part.
+    if (selectedFrom) params.append('from', selectedFrom.toISOString())
+    if (selectedTo) params.append('to', selectedTo.toISOString())
 
     const url = `${API_BASE_URL}/api/export?${params.toString()}`
     window.location.href = url
-  }, [selectedBlock, selectedSite, selectedTaxa, selectedSpecies])
+  }, [
+    selectedBlock,
+    selectedSite,
+    selectedTaxa,
+    selectedSpecies,
+    selectedFrom,
+    selectedTo,
+  ])
 
   useEffect(() => {
     return () => {
@@ -353,6 +368,7 @@ const MapCharts: React.FC = () => {
             className="w-full"
           />
         </div>
+        <YearRangeFilter />
       </div>
 
       {/* Species badge */}

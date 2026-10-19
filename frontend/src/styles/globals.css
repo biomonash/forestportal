@@ -65,3 +65,72 @@ body {
 .leaflet-container path:focus {
   outline: none;
 }
+.year-range-input {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  appearance: none;
+  -webkit-appearance: none;
+  margin: 0;
+  background: transparent;
+  pointer-events: none;
+}
+
+.year-range-input:focus {
+  outline: none;
+}
+
+.year-range-input::-webkit-slider-runnable-track {
+  height: 10px;
+  background: transparent;
+  border: none;
+}
+
+.year-range-input::-webkit-slider-thumb {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 20px;
+  height: 20px;
+  margin-top: -5px;
+  border: none;
+  border-radius: 9999px;
+  background: #028a0f;
+  box-shadow: 0 0 0 3px #fff;
+  cursor: pointer;
+  pointer-events: auto;
+}
+
+.year-range-input::-moz-range-track {
+  height: 10px;
+  background: transparent;
+  border: none;
+}
+
+.year-range-input::-moz-range-progress {
+  background: transparent;
+}
+
+.year-range-input::-moz-range-thumb {
+  width: 20px;
+  height: 20px;
+  border: none;
+  border-radius: 9999px;
+  background: #028a0f;
+  box-shadow: 0 0 0 3px #fff;
+  cursor: pointer;
+  pointer-events: auto;
+}
+
+.year-range-input:focus-visible::-webkit-slider-thumb {
+  box-shadow:
+    0 0 0 3px #fff,
+    0 0 0 6px rgb(2 138 15 / 0.35);
+}
+
+.year-range-input:focus-visible::-moz-range-thumb {
+  box-shadow:
+    0 0 0 3px #fff,
+    0 0 0 6px rgb(2 138 15 / 0.35);
+}

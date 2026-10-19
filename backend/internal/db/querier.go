@@ -25,6 +25,7 @@ type Querier interface {
 	DeleteSpecies(ctx context.Context, id int64) error
 	ExportObservations(ctx context.Context, arg ExportObservationsParams) ([]ExportObservationsRow, error)
 	GetObservation(ctx context.Context, id int64) (Observation, error)
+	GetObservationByKey(ctx context.Context, arg GetObservationByKeyParams) (int64, error)
 	GetSite(ctx context.Context, id int64) (Site, error)
 	GetSiteByCode(ctx context.Context, code string) (Site, error)
 	GetSiteIDByCode(ctx context.Context, code string) (int64, error)
@@ -42,6 +43,7 @@ type Querier interface {
 	ListSpeciesCountByTaxa(ctx context.Context, arg ListSpeciesCountByTaxaParams) ([]ListSpeciesCountByTaxaRow, error)
 	ObservationGroupByBlocks(ctx context.Context, arg ObservationGroupByBlocksParams) ([]ObservationGroupByBlocksRow, error)
 	ObservationGroupBySites(ctx context.Context, arg ObservationGroupBySitesParams) ([]ObservationGroupBySitesRow, error)
+	ObservationMonthForAllYearFilteredTimeSeriesGroupByNative(ctx context.Context, arg ObservationMonthForAllYearFilteredTimeSeriesGroupByNativeParams) ([]ObservationMonthForAllYearFilteredTimeSeriesGroupByNativeRow, error)
 	ObservationTimeSeriesGroupByNative(ctx context.Context, arg ObservationTimeSeriesGroupByNativeParams) ([]ObservationTimeSeriesGroupByNativeRow, error)
 	SearchObservations(ctx context.Context, scientificName string) ([]SearchObservationsRow, error)
 	SearchSites(ctx context.Context, code string) ([]Site, error)
@@ -51,6 +53,7 @@ type Querier interface {
 	UpdateSiteByCode(ctx context.Context, arg UpdateSiteByCodeParams) (Site, error)
 	UpdateSpecies(ctx context.Context, arg UpdateSpeciesParams) (Species, error)
 	UpdateSpeciesIUCNStatus(ctx context.Context, arg UpdateSpeciesIUCNStatusParams) error
+	UpdateSpeciesManager(ctx context.Context, arg UpdateSpeciesManagerParams) (Species, error)
 }
 
 var _ Querier = (*Queries)(nil)

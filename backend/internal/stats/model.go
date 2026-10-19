@@ -22,3 +22,7 @@ type TimeSeriesPoint struct {
 	Timestamp string `json:"timestamp"`
 	ObservationStats
 }
+
+type ObservationMonthlyTimeSeriesAllYearsRequest struct {
+	ObservationStatsInput
+}

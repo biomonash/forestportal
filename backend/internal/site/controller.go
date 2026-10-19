@@ -61,3 +61,37 @@ func (u *Controller) GetSiteByCode(c *gin.Context) {
 
 	c.JSON(200, site)
 }
+
+// UpdateSiteByCode godoc
+//
+//		@Summary		Update site (manager)
+//		@Description	Update site fields excluding site code
+//		@Tags			site
+//		@Param			code	path	string	                    True	"Code of the site"
+//	 @Param          body    body    db.UpdateSiteByCodeParams   True    "site fields to update"
+//		@Accept			json
+//		@Produce		json
+//		@Success		200	{object}	db.Site
+//		@Router			/sites/{code} [put]
+func (u *Controller) UpdateSiteByCode(c *gin.Context) {
+	code := c.Param("code")
+
+	var req db.UpdateSiteByCodeParams
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.Error(utils.NewHttpError(400, "failed to parse input", err))
+		return
+	}
+	req.Code = code
+
+	site, err := u.q.UpdateSiteByCode(c.Request.Context(), req)
+	if errors.Is(err, pgx.ErrNoRows) {
+		c.Error(utils.NewHttpError(404, "site not found", err))
+		return
+	}
+	if err != nil {
+		c.Error(fmt.Errorf("failed to update site: %w", err))
+		return
+	}
+
+	c.JSON(200, site)
+}

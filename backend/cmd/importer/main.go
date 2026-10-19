@@ -56,9 +56,11 @@ func main() {
 	}
 
 	// Run importer
-	if err := importer.ImportCSV(ctx, q, csvPath); err != nil {
+	result, err := importer.ImportCSV(ctx, q, csvPath)
+	if err != nil {
 		log.Fatalf("Import failed: %v", err)
 	}
 
-	fmt.Println("Import completed successfully!")
+	fmt.Printf("Import completed: %d observations inserted, %d skipped, %d new sites, %d new species\n",
+		result.ObservationsInserted, result.ObservationsSkipped, result.SitesCreated, result.SpeciesCreated)
 }

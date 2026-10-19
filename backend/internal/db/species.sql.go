@@ -376,3 +376,47 @@ func (q *Queries) UpdateSpeciesIUCNStatus(ctx context.Context, arg UpdateSpecies
 	_, err := q.db.Exec(ctx, updateSpeciesIUCNStatus, arg.IucnStatus, arg.ID)
 	return err
 }
+
+const updateSpeciesManager = `-- name: UpdateSpeciesManager :one
+UPDATE species
+SET native = $2,
+    taxa = $3,
+    indicator = $4,
+    reportable = $5,
+    iucn_status = $6
+WHERE id = $1
+RETURNING id, scientific_name, common_name, native, taxa, indicator, reportable, images, iucn_status
+`
+
+type UpdateSpeciesManagerParams struct {
+	ID         int64   `json:"id"`
+	Native     bool    `json:"native"`
+	Taxa       Taxa    `json:"taxa"`
+	Indicator  bool    `json:"indicator"`
+	Reportable bool    `json:"reportable"`
+	IucnStatus *string `json:"iucnStatus"`
+}
+
+func (q *Queries) UpdateSpeciesManager(ctx context.Context, arg UpdateSpeciesManagerParams) (Species, error) {
+	row := q.db.QueryRow(ctx, updateSpeciesManager,
+		arg.ID,
+		arg.Native,
+		arg.Taxa,
+		arg.Indicator,
+		arg.Reportable,
+		arg.IucnStatus,
+	)
+	var i Species
+	err := row.Scan(
+		&i.ID,
+		&i.ScientificName,
+		&i.CommonName,
+		&i.Native,
+		&i.Taxa,
+		&i.Indicator,
+		&i.Reportable,
+		&i.Images,
+		&i.IucnStatus,
+	)
+	return i, err
+}
