@@ -122,7 +122,9 @@ WITH linked AS (
   WHERE o.site_id = s.id
     AND s.code = sqlc.arg('site_code')::text
     AND o.method = 'audio'
-    AND date_trunc('minute', o."timestamp") = date_trunc('minute', sqlc.arg('recorded_at')::timestamp)
+    AND o."timestamp" >= sqlc.arg('recorded_at')::timestamp
+    AND o."timestamp" <  sqlc.arg('recorded_at')::timestamp + interval '1 minute'
+    AND o.file IS DISTINCT FROM sqlc.arg('file')::text
   RETURNING o.id
 )
 SELECT COUNT(*) FROM linked;

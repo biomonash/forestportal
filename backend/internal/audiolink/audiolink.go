@@ -56,7 +56,7 @@ func ReadKeys(file string) ([]string, error) {
 	return keys, sc.Err()
 }
 
-func Link(ctx context.Context, pool *pgxpool.Pool, keys []string, live bool, shift time.Duration) error {
+func Link(ctx context.Context, pool *pgxpool.Pool, keys []string, live bool) error {
 	tx, err := pool.Begin(ctx)
 	if err != nil {
 		return fmt.Errorf("begin tx: %w", err)
@@ -76,7 +76,7 @@ func Link(ctx context.Context, pool *pgxpool.Pool, keys []string, live bool, shi
 		n, err := q.LinkRecordingToObservations(ctx, db.LinkRecordingToObservationsParams{
 			File:       key,
 			SiteCode:   rec.SiteCode,
-			RecordedAt: rec.RecordedAt.Add(shift),
+			RecordedAt: rec.RecordedAt,
 		})
 		if err != nil {
 			return fmt.Errorf("update %s: %w", key, err)
